@@ -1,0 +1,16 @@
+use SubzeroSim.DSL
+
+simulation "pause_test" do
+  tick :time_interval, every: 2  # Step every 2 seconds
+  steps 20
+
+  agent :counter, count: 1, backend: :bwrap, model: "minimax/minimax-m2.7", preset: :base do
+    skill "skills/counter.md"
+  end
+
+  measure :count, fn states ->
+    states |> Map.values() |> hd() |> Map.get("count", 0)
+  end
+
+  halt after: 20
+end

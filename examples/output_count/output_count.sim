@@ -1,0 +1,40 @@
+use SubzeroSim.DSL
+
+# Output Count Mode Demo
+#
+# In output_count mode, steps advance based on total LLM outputs across
+# all agents, not based on wall time or explicit turn coordination.
+#
+# When agents produce outputs, they report them with output_reported.
+# After N total outputs (across all agents), the step advances.
+#
+# This is useful for:
+# - Measuring simulation progress by "work done" rather than time
+# - Simulations where agents have varying output rates
+# - Research on agent productivity and output patterns
+
+simulation "output_count_demo" do
+  tick :output_count, every: 4  # Step every 4 total outputs
+  start :immediate
+  steps 5  # Run for 5 steps (20 total outputs)
+
+  agent :producer, count: 2, backend: :bwrap, model: "minimax/minimax-m2.7" do
+    skill "skills/producer.md"
+    config outputs_generated: 0
+  end
+
+  measure :total_outputs, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "outputs_generated", 0) end)
+    |> Enum.sum()
+  end
+
+  measure :outputs_per_agent, fn states ->
+    states
+    |> Enum.map(fn {name, s} -> {name, Map.get(s, "outputs_generated", 0)} end)
+    |> Map.new()
+  end
+
+  halt after: 5
+end

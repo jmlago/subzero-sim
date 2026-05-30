@@ -1,0 +1,34 @@
+use SubzeroSim.DSL
+
+simulation "halt_conditions" do
+  tick :state_reports
+  start :immediate
+  steps 100  # Safety limit
+
+  agent :accumulator, count: 3, backend: :bwrap, model: "minimax/minimax-m2.7" do
+    skill "skills/accumulator.md"
+  end
+
+  measure :total, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "value", 0) end)
+    |> Enum.sum()
+  end
+
+  measure :max_value, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "value", 0) end)
+    |> Enum.max(fn -> 0 end)
+  end
+
+  # Halt when total exceeds 20
+  halt when: fn metrics -> (metrics[:total] || 0) > 20 end
+
+  # Halt when any single agent exceeds 15
+  halt when: fn metrics -> (metrics[:max_value] || 0) > 15 end
+
+  # Safety halt
+  halt after: 100
+end

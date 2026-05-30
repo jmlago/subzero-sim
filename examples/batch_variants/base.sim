@@ -1,0 +1,17 @@
+use SubzeroSim.DSL
+
+simulation "batch_base" do
+  tick :state_reports
+  steps 5
+
+  agent :worker, count: 2, backend: :bwrap, model: "minimax/minimax-m2.7", preset: :base do
+    skill "skills/worker.md"
+    config productivity: 1.0
+  end
+
+  measure :output, fn states ->
+    states |> Map.values() |> Enum.map(&Map.get(&1, "produced", 0)) |> Enum.sum()
+  end
+
+  halt after: 5
+end

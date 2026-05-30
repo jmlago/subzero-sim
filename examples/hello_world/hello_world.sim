@@ -1,0 +1,12 @@
+use SubzeroSim.DSL
+
+simulation "hello_world" do
+  tick :turn_based
+  start :immediate
+
+  agent :greeter, count: 2, backend: :bwrap, model: "minimax/minimax-m2.7", preset: :base do
+    skill "skills/greeter.md"
+  end
+
+  halt after: 2
+end

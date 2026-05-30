@@ -1,0 +1,19 @@
+use SubzeroSim.DSL
+
+simulation "nested_parent" do
+  tick :turn_based, wait_for_objects: true  # Wait for evaluator to complete child sim
+  steps 2  # Just 2 steps for demo
+
+  agent :orchestrator, count: 1, backend: :bwrap, model: "minimax/minimax-m2.7", preset: :base do
+    skill "skills/orchestrator.md"
+  end
+
+  object :evaluator, handler: NestedSimple.Objects.Evaluator, config: %{
+    child_sim: "examples/nested_simple/child.sim"
+  }
+
+  connect :orchestrator, :evaluator, bidirectional: true
+  # Note: evaluator->tick connection is auto-injected for wait_for_objects mode
+
+  halt after: 2
+end

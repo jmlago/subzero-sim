@@ -1,0 +1,27 @@
+use SubzeroSim.DSL
+
+simulation "simple_test" do
+  tick :state_reports
+  start :immediate
+  steps 10
+
+  agent :worker, count: 2, backend: :anthropic do
+    skill "worker.md"
+    config energy: 100
+  end
+
+  agent :manager, backend: :anthropic do
+    skill "manager.md"
+  end
+
+  connect :worker, :manager, bidirectional: true
+
+  measure :total_energy, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "energy", 0) end)
+    |> Enum.sum()
+  end
+
+  halt after: 10
+end

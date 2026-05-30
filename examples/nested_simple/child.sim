@@ -1,0 +1,16 @@
+use SubzeroSim.DSL
+
+simulation "nested_child" do
+  tick :turn_based
+  steps 3
+
+  agent :coordinator, count: 1, backend: :bwrap, model: "minimax/minimax-m2.7", preset: :base do
+    skill "skills/coordinator.md"
+  end
+
+  measure :work_done, fn states ->
+    states |> Map.values() |> Enum.map(&Map.get(&1, "work", 0)) |> Enum.sum()
+  end
+
+  halt after: 3
+end

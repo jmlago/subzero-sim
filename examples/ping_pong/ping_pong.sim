@@ -1,0 +1,27 @@
+use SubzeroSim.DSL
+
+simulation "ping_pong" do
+  tick :turn_based
+  start :immediate
+  steps 5
+
+  agent :ping, backend: :bwrap, model: "minimax/minimax-m2.7" do
+    skill "skills/ping.md"
+  end
+
+  agent :pong, backend: :bwrap, model: "minimax/minimax-m2.7" do
+    skill "skills/pong.md"
+  end
+
+  # Direct connection between ping and pong
+  connect :ping, :pong, bidirectional: true
+
+  measure :total_volleys, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "volleys", 0) end)
+    |> Enum.sum()
+  end
+
+  halt after: 5
+end

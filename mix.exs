@@ -1,0 +1,33 @@
+defmodule SubzeroSim.MixProject do
+  use Mix.Project
+
+  def project do
+    [
+      app: :subzero_sim,
+      version: "0.1.0",
+      elixir: "~> 1.15",
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env()),
+      escript: [main_module: SimCLI, name: "sim_cli"]
+    ]
+  end
+
+  def application do
+    [
+      extra_applications: [:logger],
+      mod: {SubzeroSim.Application, []}
+    ]
+  end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "examples"]
+  defp elixirc_paths(_), do: ["lib"]
+
+  defp deps do
+    [
+      {:subzeroclaw_swarm, path: "../subzero-swarm"},
+      {:jason, "~> 1.4"}
+    ]
+  end
+end

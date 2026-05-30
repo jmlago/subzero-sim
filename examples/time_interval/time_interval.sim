@@ -1,0 +1,38 @@
+use SubzeroSim.DSL
+
+# Time Interval Mode Demo
+#
+# In time_interval mode, steps advance based on wall-clock time.
+# Agents work at their own pace, and the simulation samples
+# their state every N seconds regardless of their progress.
+#
+# This is useful for:
+# - Long-running simulations where you want regular snapshots
+# - Agents with varying computation times
+# - Real-time monitoring scenarios
+
+simulation "time_interval_demo" do
+  tick :time_interval, every: 5  # Step every 5 seconds
+  start :immediate
+  steps 6  # Run for 6 steps (30 seconds total)
+
+  agent :worker, count: 2, backend: :bwrap, model: "minimax/minimax-m2.7" do
+    skill "skills/worker.md"
+    config tasks_done: 0
+  end
+
+  measure :total_tasks, fn states ->
+    states
+    |> Map.values()
+    |> Enum.map(fn s -> Map.get(s, "tasks_done", 0) end)
+    |> Enum.sum()
+  end
+
+  measure :tasks_per_worker, fn states ->
+    states
+    |> Enum.map(fn {name, s} -> {name, Map.get(s, "tasks_done", 0)} end)
+    |> Map.new()
+  end
+
+  halt after: 6
+end
