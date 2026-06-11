@@ -1,9 +1,9 @@
 defmodule SubzeroSim do
   @moduledoc """
-  SubzeroSim - Domain-agnostic simulation layer on top of subzero-swarms.
+  SubzeroSim - Domain-agnostic simulation layer on top of genswarms.
 
   Adds time (ticks), metrics collection, and halt conditions to agent swarms.
-  Users write `.sim` files with a DSL, and the compiler generates subzero-swarms configs.
+  Users write `.sim` files with a DSL, and the compiler generates genswarms configs.
 
   ## Quick Start
 
@@ -18,7 +18,7 @@ defmodule SubzeroSim do
 
   ## Architecture
 
-      .sim file → Parser → %SimSpec{} → Compiler → swarm config → subzero-swarms
+      .sim file → Parser → %SimSpec{} → Compiler → swarm config → genswarms
                                            ↓
                                     Injects Tick + Metrics objects
   """
@@ -47,7 +47,7 @@ defmodule SubzeroSim do
   end
 
   @doc """
-  Compiles a SimSpec into a subzero-swarms config map.
+  Compiles a SimSpec into a genswarms config map.
   """
   @spec compile(SimSpec.t()) :: {:ok, map()} | {:error, term()}
   def compile(spec) do

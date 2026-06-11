@@ -3,7 +3,7 @@ defmodule PingPong.Objects.Ball do
   A simple ball object that bounces between ping and pong agents.
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 
