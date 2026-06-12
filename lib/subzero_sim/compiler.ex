@@ -1,6 +1,6 @@
 defmodule SubzeroSim.Compiler do
   @moduledoc """
-  Compiles a SimSpec into a subzero-swarms configuration map.
+  Compiles a SimSpec into a genswarms configuration map.
 
   The compiler:
   1. Expands roles into individual agents (e.g., :trader with count=5 → :trader_1..5)
@@ -13,7 +13,7 @@ defmodule SubzeroSim.Compiler do
   alias SubzeroSim.Spec.{SimSpec, RoleSpec, Connection}
 
   @doc """
-  Compiles a SimSpec into a subzero-swarms config map.
+  Compiles a SimSpec into a genswarms config map.
 
   Options for child simulations:
     - `:parent` - Parent process PID

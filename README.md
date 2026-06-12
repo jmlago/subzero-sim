@@ -1,6 +1,6 @@
 # SubzeroSim
 
-A domain-agnostic simulation layer on top of [subzero-swarms](https://github.com/subzeroclaw/subzero-swarm). Adds time (ticks), metrics collection, and halt conditions to agent swarms.
+A domain-agnostic simulation layer on top of [genswarms](https://github.com/genlayerlabs/genswarms). Adds time (ticks), metrics collection, and halt conditions to agent swarms.
 
 ## Features
 
@@ -27,9 +27,9 @@ end
 
 ### Setup
 
-1. Copy `.env` from subzero-swarm (contains API keys):
+1. Copy `.env` from genswarms (contains API keys):
    ```bash
-   cp ../subzero-swarm/.env .
+   cp ../genswarms/.env .
    ```
 
 2. Source the environment before running:
@@ -370,7 +370,7 @@ mix sim validate examples/**/*.sim
 ## Architecture
 
 ```
-.sim file → Parser → %SimSpec{} → Compiler → swarm config → subzero-swarms
+.sim file → Parser → %SimSpec{} → Compiler → swarm config → genswarms
                                      ↓
                               Injects Tick + Metrics objects
 ```

@@ -15,7 +15,7 @@ defmodule SubzeroSim.Runner do
   alias SubzeroSim.{Compiler, Validator, ChildHandle}
   alias SubzeroSim.Spec.SimSpec
   alias SubzeroSim.Store.{RuntimeStore, MetricsStore, ResultStore}
-  alias SubzeroclawSwarm.SwarmManager
+  alias Genswarms.SwarmManager
 
   @doc """
   Starts a simulation from a SimSpec.

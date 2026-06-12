@@ -9,7 +9,7 @@ defmodule NestedSimple.Objects.Evaluator do
   starting the child and `object_ready` when done.
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 
@@ -58,7 +58,7 @@ defmodule NestedSimple.Objects.Evaluator do
   defp run_child_simulation(from, state) do
     # Signal that we're starting long-running work BEFORE blocking
     # Use Router directly so it's sent immediately, not after we return
-    alias SubzeroclawSwarm.Routing.Router
+    alias Genswarms.Routing.Router
     busy_msg = Jason.encode!(%{action: "object_busy"})
     Router.route(state.swarm_name, :evaluator, :tick, busy_msg)
     Logger.info("[Evaluator] Signaled object_busy to tick")

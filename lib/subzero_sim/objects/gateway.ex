@@ -20,7 +20,7 @@ defmodule SubzeroSim.Objects.Gateway do
   - `{"action": "initial_task", "data": {...}}` - To inject_to agent
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 

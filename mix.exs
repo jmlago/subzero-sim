@@ -26,7 +26,7 @@ defmodule SubzeroSim.MixProject do
 
   defp deps do
     [
-      {:subzeroclaw_swarm, path: "../subzero-swarm"},
+      {:genswarms, path: "../genswarms"},
       {:jason, "~> 1.4"}
     ]
   end

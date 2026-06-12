@@ -2,7 +2,7 @@ defmodule SubzeroSim.Spec.SimSpec do
   @moduledoc """
   Main specification struct for a simulation.
 
-  Contains all configuration needed to generate a subzero-swarms config
+  Contains all configuration needed to generate a genswarms config
   with injected Tick and Metrics objects.
   """
 
