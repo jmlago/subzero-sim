@@ -9,7 +9,7 @@ defmodule ParallelTest.Objects.SharedCounter do
   agent's increment.
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 

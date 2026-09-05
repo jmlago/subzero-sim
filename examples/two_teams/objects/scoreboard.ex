@@ -3,7 +3,7 @@ defmodule TwoTeams.Objects.Scoreboard do
   A scoreboard that tracks points for two teams.
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 

@@ -1,12 +1,12 @@
 # SubzeroSim
 
-Domain-agnostic simulation layer on top of subzero-swarms. Adds time (ticks), metrics collection, and halt conditions to agent swarms.
+Domain-agnostic simulation layer on top of genswarms. Adds time (ticks), metrics collection, and halt conditions to agent swarms.
 
 ## Setup
 
 ```bash
-# Copy .env from subzero-swarm (contains API keys)
-cp ../subzero-swarm/.env .
+# Copy .env from genswarms (contains API keys)
+cp ../genswarms/.env .
 
 # Source before running
 source .env
@@ -43,7 +43,7 @@ mix sim.test --mock script.json    # Use canned responses
 ## Architecture
 
 ```
-.sim file → Parser → %SimSpec{} → Compiler → swarm config → subzero-swarms
+.sim file → Parser → %SimSpec{} → Compiler → swarm config → genswarms
                                      ↓
                               Injects Tick + Metrics objects
                               Auto-wires objects → :metrics
@@ -252,5 +252,5 @@ E2E test logs are saved to `.test-logs/` by default (one file per example, plus 
 
 ## Dependencies
 
-- `subzeroclaw_swarm` (path: "../subzero-swarm")
+- `genswarms` (path: "../genswarms")
 - `jason` ~> 1.4
