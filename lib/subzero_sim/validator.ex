@@ -74,25 +74,15 @@ defmodule SubzeroSim.Validator do
   end
 
   defp validate_role_backend(errors, %RoleSpec{name: name, backend: backend}) do
-    if valid_backend?(backend) do
+    if Genswarms.Config.SwarmConfig.valid_backend?(backend) do
       errors
     else
       [
-        "Role #{inspect(name)} has invalid backend: #{inspect(backend)}. " <>
-          "Valid: :bwrap, {:bwrap, opts}, :local, {:docker, image}, {:docker, image, opts}, {:ssh, host}, {:ssh, host, opts}"
+        "Role #{inspect(name)} has invalid Genswarms backend: #{inspect(backend)}"
         | errors
       ]
     end
   end
-
-  defp valid_backend?(:bwrap), do: true
-  defp valid_backend?({:bwrap, opts}) when is_map(opts), do: true
-  defp valid_backend?(:local), do: true
-  defp valid_backend?({:docker, container}) when is_binary(container), do: true
-  defp valid_backend?({:docker, container, opts}) when is_binary(container) and is_map(opts), do: true
-  defp valid_backend?({:ssh, host}) when is_binary(host), do: true
-  defp valid_backend?({:ssh, host, opts}) when is_binary(host) and is_map(opts), do: true
-  defp valid_backend?(_), do: false
 
   defp validate_tick_config(errors, %SimSpec{tick_config: tick_config}) do
     case TickConfig.validate(tick_config) do
@@ -134,7 +124,10 @@ defmodule SubzeroSim.Validator do
 
       cond do
         not from_valid and not to_valid ->
-          ["Connection references undefined nodes: #{inspect(conn.from)} and #{inspect(conn.to)}" | acc]
+          [
+            "Connection references undefined nodes: #{inspect(conn.from)} and #{inspect(conn.to)}"
+            | acc
+          ]
 
         not from_valid ->
           ["Connection references undefined node: #{inspect(conn.from)}" | acc]

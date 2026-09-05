@@ -12,8 +12,6 @@ defmodule SubzeroSim.Store.RuntimeStore do
   """
 
   @table :subzero_sim_runtime
-  @dets_dir Path.expand("~/.subzeroclaw/runtime")
-  @dets_file Path.join(@dets_dir, "simulations.dets")
 
   @type status :: :initializing | :running | :paused | :halted | :completed
 
@@ -24,12 +22,18 @@ defmodule SubzeroSim.Store.RuntimeStore do
   def ensure_table do
     case :dets.info(@table) do
       :undefined ->
-        File.mkdir_p!(@dets_dir)
-        {:ok, @table} = :dets.open_file(@table, [
-          file: String.to_charlist(@dets_file),
-          type: :set,
-          auto_save: 1000
-        ])
+        dir =
+          Application.get_env(:subzero_sim, :data_dir, "~/.subzeroclaw/runtime") |> Path.expand()
+
+        File.mkdir_p!(dir)
+
+        {:ok, @table} =
+          :dets.open_file(@table,
+            file: String.to_charlist(Path.join(dir, "simulations.dets")),
+            type: :set,
+            auto_save: 1000
+          )
+
         :ok
 
       _ ->

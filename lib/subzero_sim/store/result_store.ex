@@ -7,8 +7,6 @@ defmodule SubzeroSim.Store.ResultStore do
   """
 
   @table :subzero_sim_results
-  @dets_dir Path.expand("~/.subzeroclaw/runtime")
-  @dets_file Path.join(@dets_dir, "results.dets")
 
   @doc """
   Ensures the DETS table exists.
@@ -17,11 +15,14 @@ defmodule SubzeroSim.Store.ResultStore do
   def ensure_table do
     case :dets.info(@table) do
       :undefined ->
-        File.mkdir_p!(@dets_dir)
+        dir =
+          Application.get_env(:subzero_sim, :data_dir, "~/.subzeroclaw/runtime") |> Path.expand()
+
+        File.mkdir_p!(dir)
 
         {:ok, @table} =
           :dets.open_file(@table,
-            file: String.to_charlist(@dets_file),
+            file: String.to_charlist(Path.join(dir, "results.dets")),
             type: :set,
             auto_save: 1000
           )

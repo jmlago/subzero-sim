@@ -185,7 +185,10 @@ defmodule SubzeroSim.Runner do
           IO.puts("Step #{step}")
         end
 
-        IO.puts("Simulation #{status}: #{RuntimeStore.get_halt_reason(swarm_name) || "completed"}")
+        IO.puts(
+          "Simulation #{status}: #{RuntimeStore.get_halt_reason(swarm_name) || "completed"}"
+        )
+
         :ok
 
       %{step: step} ->
@@ -309,7 +312,7 @@ defmodule SubzeroSim.Runner do
 
         case result do
           {:ok, info} -> {:ok, Map.put(info, :metrics, metrics || %{})}
-          {:error, :timeout} -> {:ok, %{status: :timeout, metrics: metrics || %{}}}
+          {:error, :timeout} -> {:error, :timeout}
           error -> error
         end
 
