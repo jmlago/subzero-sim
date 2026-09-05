@@ -77,7 +77,7 @@ defmodule Mix.Tasks.Sim.Events do
 
   defp do_query(query_opts) do
     try do
-      SubzeroclawSwarm.CLI.SwarmRegistry.query_events(query_opts)
+      Genswarms.CLI.SwarmRegistry.query_events(query_opts)
     rescue
       _ -> []
     end

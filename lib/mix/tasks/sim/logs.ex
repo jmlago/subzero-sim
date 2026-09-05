@@ -143,7 +143,7 @@ defmodule Mix.Tasks.Sim.Logs do
 
     # Try to subscribe to real-time events if available
     try do
-      SubzeroclawSwarm.Observability.LogStore.subscribe(name)
+      Genswarms.Observability.LogStore.subscribe(name)
       stream_loop(agent_name, event_types)
     rescue
       _ ->
@@ -201,7 +201,7 @@ defmodule Mix.Tasks.Sim.Logs do
           query_opts
         end
 
-      SubzeroclawSwarm.CLI.SwarmRegistry.query_events(query_opts)
+      Genswarms.CLI.SwarmRegistry.query_events(query_opts)
       |> Enum.filter(fn e ->
         event_type = if is_atom(e.event_type), do: e.event_type, else: String.to_atom(e.event_type)
         event_type in event_types

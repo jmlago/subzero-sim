@@ -26,7 +26,7 @@ defmodule SubzeroSim.Objects.Tick do
   - `{"action": "halt", "data": {"reason": "..."}}` - Halt signal from Metrics
   """
 
-  @behaviour SubzeroclawSwarm.Objects.ObjectHandler
+  @behaviour Genswarms.Objects.ObjectHandler
 
   require Logger
 

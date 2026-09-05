@@ -8,6 +8,7 @@ defmodule SubzeroSim.MixProject do
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: [test: "test --no-start"],
       elixirc_paths: elixirc_paths(Mix.env()),
       escript: [main_module: SimCLI, name: "sim_cli"]
     ]
@@ -26,7 +27,7 @@ defmodule SubzeroSim.MixProject do
 
   defp deps do
     [
-      {:subzeroclaw_swarm, path: "../subzero-swarm"},
+      {:genswarms, path: "../genswarms"},
       {:jason, "~> 1.4"}
     ]
   end
