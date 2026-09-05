@@ -410,3 +410,9 @@ The compiler:
 ### Metrics → Tick
 - `{"action": "step_complete"}`
 - `{"action": "halt", "data": {"reason": "..."}}`
+
+The 2026-09-05 integration is verified against Genswarms `93a41d6` (core PR #98).
+CI checks out that exact sibling revision and runs all 126 deterministic tests.
+The suite covers current backend/config shapes, bounded candidate rejection,
+Gateway outcomes, timeout classification and application-owned DETS tables.
+No provider credentials or real-agent experiments are part of that evidence.

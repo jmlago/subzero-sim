@@ -1,0 +1,27 @@
+name: Test
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: subzero-sim
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: subzero-sim
+      - uses: actions/checkout@v4
+        with:
+          repository: genlayerlabs/genswarms
+          ref: 93a41d6698871d6f6bf2af9c8a79bfe52f9a04f6
+          path: genswarms
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.18.4'
+          otp-version: '27.3'
+      - run: mix deps.get --check-locked
+      - run: mix test
