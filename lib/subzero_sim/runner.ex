@@ -312,7 +312,7 @@ defmodule SubzeroSim.Runner do
 
         case result do
           {:ok, info} -> {:ok, Map.put(info, :metrics, metrics || %{})}
-          {:error, :timeout} -> {:ok, %{status: :timeout, metrics: metrics || %{}}}
+          {:error, :timeout} -> {:error, :timeout}
           error -> error
         end
 

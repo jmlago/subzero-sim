@@ -48,7 +48,9 @@ defmodule SubzeroSim.Objects.GatewayTest do
                Gateway.handle_message(:tick, msg, state)
 
       assert new_state.task_injected == true
-      assert %{"action" => "initial_task", "data" => %{"task" => "work"}} = Jason.decode!(response)
+
+      assert %{"action" => "initial_task", "data" => %{"task" => "work"}} =
+               Jason.decode!(response)
     end
 
     test "does not inject if already injected" do
@@ -148,6 +150,36 @@ defmodule SubzeroSim.Objects.GatewayTest do
   end
 
   describe "interface/0" do
+    test "only Tick may trigger injection and only the first valid result is delivered" do
+      {:ok, state} =
+        Gateway.init(%{
+          sim_name: "gateway-once",
+          parent_pid: self(),
+          inject_to: :worker,
+          collect_from: :worker,
+          initial_task: %{task: "work"}
+        })
+
+      started = Jason.encode!(%{action: "simulation_started", data: %{}})
+      assert {:noreply, ^state} = Gateway.handle_message(:worker, started, state)
+      assert {:send, :worker, _, state} = Gateway.handle_message(:tick, started, state)
+
+      null = Jason.encode!(%{action: "final_result", data: nil})
+
+      for sender <- [:worker_backup, :worker_0, :worker_01, :worker_1_extra] do
+        assert {:noreply, ^state} = Gateway.handle_message(sender, null, state)
+      end
+
+      assert {:noreply, state} = Gateway.handle_message("worker_2", null, state)
+      assert state.result_received
+      assert_receive {:gateway_result, "gateway-once", nil}
+
+      late = Jason.encode!(%{action: "final_result", data: %{late: true}})
+      assert {:noreply, ^state} = Gateway.handle_message(:worker_2, late, state)
+      refute_receive {:gateway_result, "gateway-once", _}
+      assert SubzeroSim.Store.ResultStore.get("gateway-once") == nil
+    end
+
     test "returns interface spec" do
       interface = Gateway.interface()
       assert is_map(interface)

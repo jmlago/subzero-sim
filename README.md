@@ -369,6 +369,17 @@ mix sim validate examples/**/*.sim
 
 ## Architecture
 
+The runtime application owns its DETS tables through a supervised store owner;
+short-lived child evaluators must not be their only owner. Configure
+`:subzero_sim, :data_dir` before application startup to isolate runtime storage.
+DETS is persistence within a BEAM instance, not a safe multi-process IPC database.
+
+`Runner.run_and_collect/2` returns `{:error, :timeout}` at a deadline, never an
+`:ok` timeout result. Gateway injects tasks only on Tick's start message and
+accepts the first valid final result (including JSON null). Later results are
+ignored for that Gateway lifetime. This is not exactly-once delivery across
+crashes: restarting a Gateway still requires caller-level reconciliation.
+
 ```
 .sim file → Parser → %SimSpec{} → Compiler → swarm config → subzero-swarms
                                      ↓

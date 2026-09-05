@@ -33,7 +33,8 @@ defmodule SubzeroSim.Objects.Gateway do
     :collect_from,
     :initial_task,
     :result,
-    :task_injected
+    result_received: false,
+    task_injected: false
   ]
 
   @impl true
@@ -79,7 +80,8 @@ defmodule SubzeroSim.Objects.Gateway do
   end
 
   # Handle simulation_started from Tick
-  defp handle_action(_from, %{"action" => "simulation_started", "data" => _data}, state) do
+  defp handle_action(from, %{"action" => "simulation_started", "data" => _data}, state)
+       when from in [:tick, "tick"] do
     if state.task_injected or is_nil(state.inject_to) or is_nil(state.initial_task) do
       {:noreply, state}
     else
@@ -95,7 +97,7 @@ defmodule SubzeroSim.Objects.Gateway do
     # Only accept from collect_from agent (or any agent if collect_from not specified)
     valid_sender? = is_nil(state.collect_from) or agent_matches?(from, state.collect_from)
 
-    if valid_sender? do
+    if valid_sender? and not state.result_received do
       Logger.info("[Gateway] Received final_result from #{from}")
 
       # Store the result
@@ -106,9 +108,12 @@ defmodule SubzeroSim.Objects.Gateway do
         send(state.parent_pid, {:gateway_result, state.sim_name, data})
       end
 
-      {:noreply, %{state | result: data}}
+      {:noreply, %{state | result: data, result_received: true}}
     else
-      Logger.debug("[Gateway] Ignoring final_result from #{from} (expected from #{state.collect_from})")
+      Logger.debug(
+        "[Gateway] Ignoring final_result from #{from} (expected from #{state.collect_from})"
+      )
+
       {:noreply, state}
     end
   end
@@ -126,17 +131,15 @@ defmodule SubzeroSim.Objects.Gateway do
 
   # Check if an agent name matches the expected role
   # Handles both exact match and role expansion (e.g., :coordinator matches :coordinator_1)
-  defp agent_matches?(agent_name, expected) when is_atom(agent_name) and is_atom(expected) do
-    agent_str = Atom.to_string(agent_name)
-    expected_str = Atom.to_string(expected)
-
-    agent_name == expected or
-      String.starts_with?(agent_str, expected_str <> "_")
-  end
-
   defp agent_matches?(agent_name, expected) do
-    to_string(agent_name) == to_string(expected) or
-      String.starts_with?(to_string(agent_name), to_string(expected) <> "_")
+    name = to_string(agent_name)
+    role = to_string(expected)
+
+    name == role or
+      case String.split(name, role <> "_", parts: 2) do
+        ["", suffix] -> Regex.match?(~r/\A[1-9][0-9]*\z/, suffix)
+        _ -> false
+      end
   end
 
   defp encode_initial_task(task) do

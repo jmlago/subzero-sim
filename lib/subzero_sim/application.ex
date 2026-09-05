@@ -6,7 +6,7 @@ defmodule SubzeroSim.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # ETS tables are created by stores on first use
+      SubzeroSim.Store.Owner
     ]
 
     opts = [strategy: :one_for_one, name: SubzeroSim.Supervisor]
